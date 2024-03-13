@@ -15,6 +15,11 @@ const Userschema = Joi.object({
     .minOfUppercase(1)
     .minOfNumeric(1)
     .required(),
+  cPassword: JoiPassword.string()
+    .min(8)
+    .minOfLowercase(1)
+    .minOfUppercase(1)
+    .minOfNumeric(1),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
 });

@@ -3,7 +3,7 @@ const Joi = require("joi");
 const { joiPasswordExtendCore } = require("joi-password");
 const JoiPassword = Joi.extend(joiPasswordExtendCore);
 
-const userSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -21,12 +21,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    cPassword: {
-      type: String,
-    },
   },
   { timestamps: true }
 );
 
-const Users = mongoose.model(`user`, userSchema);
-module.exports = { Users };
+const Admins = mongoose.model(`admin"`, adminSchem);
+module.exports = { Admins };

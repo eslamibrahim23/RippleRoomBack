@@ -1,4 +1,4 @@
-const User = require("../models/userSchema");
+const { Users } = require("../models/userSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Userschema, loginschema } = require("../Utlis/UserValidation");
@@ -11,7 +11,7 @@ signup = async (req, res, next) => {
       throw validated.error;
     }
 
-    const emailcheck = await User.findOne({ Email }).exec();
+    const emailcheck = await Users.findOne({ Email }).exec();
     if (emailcheck) {
       return res.status(400).json({ message: "Email is already in use" });
     }
@@ -19,7 +19,7 @@ signup = async (req, res, next) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(Password, saltRounds);
 
-    const newUser = await User.create({
+    const newUser = await Users.create({
       firstName,
       Email,
       Password: hashedPassword,
@@ -42,7 +42,7 @@ const login = async (req, res, next) => {
     if (validated.error) {
       return res.status(400).json({ message: validated.error.message });
     }
-    var user = await User.findOne({ Email: req.body.Email });
+    var user = await Users.findOne({ Email: req.body.Email });
     if (!user) return res.status(400).send("Invalid email or password");
     ///check pass
     var passwordCheck = await bcrypt.compare(req.body.Password, user.Password);
