@@ -1,30 +1,21 @@
 const express = require("express");
-const dotenv = require("dotenv");
-dotenv.config();
-const app = express();
+require("dotenv").config();
 const connect = require("./dataBase/connectToDB");
-const PORT = process.env.PORT || 5000;
-
-app.use(express.json());
-
 const authRoute = require("./Routes/authRoute");
-app.use("/users", authRoute);
+const cors = require("cors");
+const app = express();
 app.use(express.json());
 
-const User = require("./models/userSchema");
-app.get("/user", async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (eror) {
-    console.log(eror);
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
-  }
-});
+app.use(cors());
+app.use("/", authRoute);
+const PORT = process.env.PORT || 3000;
+const URL = process.env.URL_DATABASE;
+console.log(process.env.URL_DATABASE);
 
-connect();
+connect(
+  "mongodb://test:test@ac-ut3jk2b-shard-00-00.qntodh6.mongodb.net:27017,ac-ut3jk2b-shard-00-01.qntodh6.mongodb.net:27017,ac-ut3jk2b-shard-00-02.qntodh6.mongodb.net:27017/RIPPLEROOM?replicaSet=atlas-qpj10i-shard-0&ssl=true&authSource=admin"
+);
+console.log(PORT);
 app.listen(PORT, () => {
-  console.log(PORT, "server is running..");
+  console.log(`Server is running on port ${PORT}`);
 });
