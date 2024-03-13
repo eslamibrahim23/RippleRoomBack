@@ -5,17 +5,17 @@ const { Chats } = require("../models/chatSchema");
 const messageSchema = new mongoose.Schema({
   chatId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Chats",
+    ref: "chat",
     required: true,
   },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Users",
+    ref: "user",
     required: true,
   },
   receiver: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Users",
+    ref: "user",
     required: true,
   },
   content: {
@@ -28,5 +28,6 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-const Messages = mongoose.model(`Message`, messageSchema);
+const Messages = mongoose.model(`message`, messageSchema);
+
 module.exports = { Messages };
