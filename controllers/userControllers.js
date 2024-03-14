@@ -1,4 +1,5 @@
 const { Users } = require("../models/userSchema");
+const { Chats } = require("../models/chatSchema");
 
 getalluser = async (req, res, next) => {
   try {
@@ -9,4 +10,15 @@ getalluser = async (req, res, next) => {
     res.status(500).json({ error: "Can not fetch all users" });
   }
 };
-module.exports = { getalluser };
+// show all chats
+getallchat = async (req, res, next) => {
+  try {
+    const chats = await Chats.find();
+    console.log("samah");
+    res.json(chats);
+  } catch (error) {
+    console.log("San not to fetch users", error);
+    res.status(500).json({ error: "Can not fetch all chats" });
+  }
+};
+module.exports = { getalluser, getallchat };
