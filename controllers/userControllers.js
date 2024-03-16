@@ -25,9 +25,11 @@ getuserbyid = async (req, res, next) => {
 edituserProfile = async (req, res, next) => {
   const iD = req.params.id;
   const editprofile = req.body;
-  editprofile.Image = req.file
-    ? req.file.path
-    : "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png";
+  if (req.file) {
+    editprofile.Image = req.file
+      ? req.file.path
+      : "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png";
+  }
 
   try {
     const validated = updatedUserschema.validate(editprofile);
