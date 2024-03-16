@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { Userschema, loginschema } = require("../Utlis/UserValidation");
 signup = async (req, res, next) => {
   try {
-    const { firstName, Email, Password } = req.body;
+    const { userName, Email, Password } = req.body;
 
     const validated = Userschema.validate(req.body);
     if (validated.error) {
@@ -20,7 +20,7 @@ signup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(Password, saltRounds);
 
     const newUser = await Users.create({
-      firstName,
+      userName,
       Email,
       Password: hashedPassword,
     });

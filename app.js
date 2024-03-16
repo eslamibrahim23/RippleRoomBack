@@ -10,13 +10,27 @@ const chatRoutes = require("./Routes/chatRoutes");
 const messageRoutes = require("./Routes/messageRoutes");
 const { Chats } = require("./models/chatSchema");
 const { Messages } = require("./models/messageSchema");
-
+const path = require("path");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 app.use(express.json());
 app.use(cors());
 app.use("/", authRoute);
+
+//// image
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(express.urlencoded({ extended: true }));
+app.post("/upload", (req, res) => {
+  const contentType = req.headers["content-type"];
+  if (!contentType || !contentType.includes("multipart/form-data")) {
+    return res.status(400).json({ error: "Invalid Content-Type header" });
+  }
+
+  d;
+});
+
+////
 app.use("/user", userRoute);
 app.use("/api", chatRoutes);
 app.use("/message", messageRoutes);

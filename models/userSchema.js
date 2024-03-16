@@ -5,18 +5,23 @@ const JoiPassword = Joi.extend(joiPasswordExtendCore);
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    userName: {
       type: String,
       required: true,
-    },
-    lastName: {
-      type: String,
     },
     Email: {
       type: String,
       required: true,
       unique: true,
     },
+    Phone: {
+      type: Number,
+    },
+    Bio: {
+      type: String,
+    },
+    Address: String,
+    Image: String,
     Password: {
       type: String,
       required: true,
