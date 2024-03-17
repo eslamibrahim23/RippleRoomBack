@@ -7,11 +7,15 @@ const {
   gatAllChats,
   getChatTwoUser,
   chatDeleted,
+  createGroup,
+  getAllGroups,
 } = require("../controllers/chatController");
 // Route to create a new chat
 router.post("/newchat", createChat);
-router.get("/allChats", gatAllChats);
+router.get("/allChats/:id", gatAllChats);
 router.get("/chatTwoUsers/:senderId/:receiverId", getChatTwoUser);
 router.delete("/deleteChat/:id", chatDeleted);
+router.post("/creategroup/:id", createGroup);
+router.get("/getAllgroupsUser/:id", getAllGroups);
 
 module.exports = router;

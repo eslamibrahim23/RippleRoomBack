@@ -5,13 +5,29 @@ const chatSchema = new mongoose.Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-    required: true,
   },
   receiver: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-    required: true,
   },
+  groupChat: {
+    type: Boolean,
+    default: false,
+  },
+  groupName: {
+    type: String,
+    default: null,
+  },
+  groupAdmin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+  members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

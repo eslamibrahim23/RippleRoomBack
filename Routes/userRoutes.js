@@ -10,7 +10,6 @@ const {
 const upload = require("../Middleware/upload");
 userroutes.get("/profile/:id", getuserbyid);
 userroutes.get("/users", getalluser);
-userroutes.get("/chats", getallchat);
 
 userroutes.delete("/deleteProfile/:id", deleteProfile);
 userroutes.patch("/editprofile/:id", upload.single("Image"), edituserProfile);

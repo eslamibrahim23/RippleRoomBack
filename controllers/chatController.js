@@ -49,7 +49,7 @@ const chatDeleted = async (req, res) => {
     const { id } = req.params;
     const chatDeleted = await Chats.findByIdAndDelete(id);
     if (!chatDeleted) {
-      res.status(500).json("Sorry but this chat not found");
+      res.status(404).json("Sorry but this chat not found");
     }
     res.status(200).json("You deleted this chat Now");
   } catch (error) {
@@ -57,5 +57,42 @@ const chatDeleted = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-module.exports = { createChat, gatAllChats, getChatTwoUser, chatDeleted };
+///////////////// here part of grouChat
+const createGroup = async (req, res) => {
+  try {
+    const { groupName, members } = req.body;
+    const groupAdmin = req.params.id;
+    const newGroup = new Chats({
+      members,
+      groupName,
+      groupAdmin,
+      groupAdmin,
+      groupChat: true,
+    });
+    await newGroup.save();
+    res.status(200).json(newGroup);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+/////// getAllGroups
+const getAllGroups = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const myGroups = await Chats.find({
+      members: { $in: [id] },
+      groupChat: true,
+    });
+    res.status(200).json(myGroups);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+module.exports = {
+  createChat,
+  gatAllChats,
+  getChatTwoUser,
+  chatDeleted,
+  createGroup,
+  getAllGroups,
+};
