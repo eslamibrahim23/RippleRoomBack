@@ -26,13 +26,11 @@ app.post("/upload", (req, res) => {
   if (!contentType || !contentType.includes("multipart/form-data")) {
     return res.status(400).json({ error: "Invalid Content-Type header" });
   }
-
-  d;
 });
 
 ////
 app.use("/user", userRoute);
-app.use("/api", chatRoutes);
+app.use("/chat", chatRoutes);
 app.use("/message", messageRoutes);
 const PORT = process.env.PORT || 3000;
 const URL = process.env.URL_DATABASE;
