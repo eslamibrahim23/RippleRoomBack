@@ -25,4 +25,37 @@ const gatAllChats = async (req, res) => {
       .json({ message: "Error fetching Chats", error: error.message });
   }
 };
-module.exports = { createChat, gatAllChats };
+
+/// hena get user between 2 user
+const getChatTwoUser = async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.params;
+    const chats = await Chats.find({
+      $or: [
+        { sender: senderId, receiver: receiverId },
+        { sender: receiverId, receiver: senderId },
+      ],
+    });
+    res.status(200).json(chats);
+  } catch (error) {
+    console.log(" f error hena y samah m3ml4 fetch ll chat");
+    res.status(500).json({ error: error.message });
+  }
+};
+
+//hena b2q delete chat between 2 users
+const chatDeleted = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const chatDeleted = await Chats.findByIdAndDelete(id);
+    if (!chatDeleted) {
+      res.status(500).json("Sorry but this chat not found");
+    }
+    res.status(200).json("You deleted this chat Now");
+  } catch (error) {
+    console.log("y samah 7sl kda error f deleted el chat");
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { createChat, gatAllChats, getChatTwoUser, chatDeleted };
