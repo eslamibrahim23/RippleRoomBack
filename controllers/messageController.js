@@ -6,7 +6,7 @@ const createMessage = async (req, res) => {
   try {
     const { id } = req.params;
     const chatId = id;
-    const { sender, receiver, content } = req.body;
+    const { sender, content } = req.body;
 
     const chat = await Chats.findById(chatId);
     if (!chat) {
@@ -16,7 +16,6 @@ const createMessage = async (req, res) => {
       const message = await Messages.create({
         chatId,
         sender,
-        receiver: chat.members,
         content,
       });
       return res.status(201).json(message);
@@ -24,7 +23,6 @@ const createMessage = async (req, res) => {
       const message = await Messages.create({
         chatId,
         sender,
-        receiver,
         content,
       });
       return res.status(201).json(message);
