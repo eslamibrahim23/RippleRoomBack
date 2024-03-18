@@ -61,7 +61,7 @@ edituserProfile = async (req, res, next) => {
 /////show all users
 getalluser = async (req, res, next) => {
   try {
-    const users = await Users.find().select("userName Email");
+    const users = await Users.find();
     res.json(users);
   } catch (error) {
     console.log("San not to fetch users", error);

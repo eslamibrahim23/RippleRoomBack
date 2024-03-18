@@ -35,7 +35,10 @@ const getChatTwoUser = async (req, res) => {
         { sender: senderId, receiver: receiverId },
         { sender: receiverId, receiver: senderId },
       ],
-    });
+    })
+      .populate("sender", `userName Image Bio Email `)
+      .populate("receiver", "userName Image Bio Email")
+      .select("sender receiver createdAt");
     res.status(200).json(chats);
   } catch (error) {
     console.log(" f error hena y samah m3ml4 fetch ll chat");
@@ -80,9 +83,12 @@ const getAllGroups = async (req, res) => {
   try {
     const { id } = req.params;
     const myGroups = await Chats.find({
-      members: { $in: [id] },
+      $or: [{ members: { $in: [id] } }, { groupAdmin: id }],
       groupChat: true,
-    });
+    })
+      .populate("groupAdmin", "userName Image Bio Email")
+      .populate("members", "userName Bio Image Email");
+
     res.status(200).json(myGroups);
   } catch (error) {
     res.status(500).json({ error: error.message });

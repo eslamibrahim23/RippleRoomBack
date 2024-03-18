@@ -39,7 +39,17 @@ const getMessagesChat = async (req, res) => {
   try {
     const { id } = req.params;
     const chatId = id;
-    const messages = await Messages.find({ chatId });
+    const messages = await Messages.find({ chatId })
+      .populate({
+        path: "sender",
+        select: "userName Image", // Select the name and image fields from the sender
+        populate: {
+          path: "Image", // Assuming there's an 'image' field in the user schema
+          select: "url", // Select the URL field of the image
+        },
+      })
+      .sort({ createdAt: 1 })
+      .select("content createdAt sender");
     res.status(200).json(messages);
   } catch (error) {
     res.status(500).json({ error: error.message });
