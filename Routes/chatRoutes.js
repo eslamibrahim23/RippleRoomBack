@@ -9,6 +9,7 @@ const {
   chatDeleted,
   createGroup,
   getAllGroups,
+  getChat,
 } = require("../controllers/chatController");
 // Route to create a new chat
 router.post("/newchat", createChat);
@@ -17,5 +18,5 @@ router.get("/chatTwoUsers/:senderId/:receiverId", getChatTwoUser);
 router.delete("/deleteChat/:id", chatDeleted);
 router.post("/creategroup/:id", createGroup);
 router.get("/getAllgroupsUser/:id", getAllGroups);
-
+router.post("/getorCreateChat/:id", getChat);
 module.exports = router;

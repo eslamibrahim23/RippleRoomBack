@@ -1,14 +1,10 @@
 const mongoose = require("mongoose");
 const { Users } = require("../models/userSchema");
+const { string } = require("joi");
 
 const chatSchema = new mongoose.Schema({
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-  },
-  receiver: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+  name: {
+    type: String,
   },
   groupChat: {
     type: Boolean,
@@ -18,11 +14,12 @@ const chatSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+
   groupAdmin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },
-  members: [
+  users: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",

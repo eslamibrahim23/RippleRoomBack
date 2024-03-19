@@ -1,5 +1,41 @@
 const { Chats } = require("../models/chatSchema");
+/////new update
+const getChat = async (req, res, next) => {
+  const { userId } = req.body;
+  const { id } = req.params; // Assuming the user ID is passed as a parameter in the URL
+  const users = [id, userId].sort(); // Sort user IDs for consistency
 
+  let chat = await Chats.findOne({
+    users: {
+      $size: 2,
+      $all: users,
+    },
+  });
+
+  if (chat) {
+    res.status(200).json(chat);
+  } else {
+    const newChat = new Chats({
+      users,
+      name: "sender", // front eend handel it
+    });
+
+    const savedChat = await newChat.save();
+
+    const getChat = await Chats.findById(savedChat._id).populate(
+      "users",
+      "-Password"
+    );
+
+    if (!getChat) {
+      return next(new BadRequest("The chat does not exist", 400));
+    }
+
+    res.status(201).json(getChat);
+  }
+};
+
+////////////
 // hena hn3ml create l new chat
 const createChat = async (req, res) => {
   try {
@@ -101,4 +137,5 @@ module.exports = {
   chatDeleted,
   createGroup,
   getAllGroups,
+  getChat,
 };
