@@ -20,8 +20,12 @@ const userSchema = new mongoose.Schema(
     Bio: {
       type: String,
     },
-    Address: String,
-    Image: String,
+    Address: {
+      type: String,
+      default:
+        "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg",
+    },
+
     Password: {
       type: String,
     },
