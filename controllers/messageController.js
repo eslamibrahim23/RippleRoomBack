@@ -34,7 +34,7 @@ const createMessage = async (req, res) => {
       .json({ message: "Error creating message", error: error.message });
   }
 };
-/////hene get message by chatId/
+/////hene get message by chatId/    hena hnget all messages in one chat
 const getMessagesChat = async (req, res) => {
   try {
     const { id } = req.params;

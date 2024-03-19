@@ -1,10 +1,10 @@
 const { Chats } = require("../models/chatSchema");
-/////new update
+const { Messages } = require("../models/messageSchema");
+/////new update hena get or create in one endpoint
 const getChat = async (req, res, next) => {
   const { userId } = req.body;
-  const { id } = req.params; // Assuming the user ID is passed as a parameter in the URL
-  const users = [id, userId].sort(); // Sort user IDs for consistency
-
+  const { id } = req.params; // the sender in "in local storage"
+  const users = [id, userId].sort();
   let chat = await Chats.findOne({
     users: {
       $size: 2,
@@ -17,7 +17,7 @@ const getChat = async (req, res, next) => {
   } else {
     const newChat = new Chats({
       users,
-      name: "sender", // front eend handel it
+      name: "sender", // front end handel it
     });
 
     const savedChat = await newChat.save();
@@ -28,7 +28,7 @@ const getChat = async (req, res, next) => {
     );
 
     if (!getChat) {
-      return next(new BadRequest("The chat does not exist", 400));
+      return next(new BadRequest("The chat not found", 400));
     }
 
     res.status(201).json(getChat);
@@ -36,53 +36,82 @@ const getChat = async (req, res, next) => {
 };
 
 ////////////
-// hena hn3ml create l new chat
+
+// Create a new chat    //hena creat in endpoint
 const createChat = async (req, res) => {
   try {
-    console.log("new chat hena b2a");
-    const { sender, receiver } = req.body;
-    const chat = new Chats({ sender, receiver });
-    await chat.save();
-    res.status(201).json(chat);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    const { userId1, userId2 } = req.body;
 
-/// hena get all chats
-const gatAllChats = async (req, res) => {
-  try {
-    const chats = await Chats.find();
-    return res.status(200).json(chats);
+    const newChat = new Chats({
+      users: [userId1, userId2],
+    });
+    await newChat.save();
+
+    res.status(201).json({ message: "Chat created successfully" });
   } catch (error) {
-    console.error("Error fetching Chats:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching Chats", error: error.message });
+    console.log("Error occurred while creating chat:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
 /// hena get user between 2 user
 const getChatTwoUser = async (req, res) => {
   try {
-    const { senderId, receiverId } = req.params;
+    const { userId1, userId2 } = req.params;
+    console.log(userId1, userId2);
+
     const chats = await Chats.find({
-      $or: [
-        { sender: senderId, receiver: receiverId },
-        { sender: receiverId, receiver: senderId },
-      ],
-    })
-      .populate("sender", `userName Image Bio Email `)
-      .populate("receiver", "userName Image Bio Email")
-      .select("sender receiver createdAt");
+      users: { $elemMatch: { $eq: userId1, $eq: userId2 } },
+    }).populate("users", "userName Image Bio Email");
+
+    console.log("Chats found:", chats);
+
     res.status(200).json(chats);
   } catch (error) {
-    console.log(" f error hena y samah m3ml4 fetch ll chat");
+    console.log("Error occurred while fetching chats:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+/////////////// hena get all chats for user to loggin
+const chatsForUserLogedIn = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const chats = await Chats.find({ users: userId }).populate(
+      "users",
+      "userName Image"
+    );
+
+    const processedChats = await Promise.all(
+      chats.map(async (chat) => {
+        const receiver = chat.users.find(
+          (user) => user._id.toString() !== userId
+        );
+
+        const lastMessage = await Messages.findOne({ chatId: chat._id })
+          .sort({ createdAt: -1 })
+          .select("content");
+
+        return {
+          _id: chat._id,
+          receiver: {
+            _id: receiver._id,
+            userName: receiver.userName,
+            Image: receiver.Image,
+          },
+          lastMessage: lastMessage ? lastMessage.content : null,
+        };
+      })
+    );
+
+    res.status(200).json(processedChats);
+  } catch (error) {
+    console.log("Error occurred while fetching chats:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
-//hena b2q delete chat between 2 users
+//hena b2q delete chat group or chat
 const chatDeleted = async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,10 +128,10 @@ const chatDeleted = async (req, res) => {
 ///////////////// here part of grouChat
 const createGroup = async (req, res) => {
   try {
-    const { groupName, members } = req.body;
+    const { groupName, users } = req.body;
     const groupAdmin = req.params.id;
     const newGroup = new Chats({
-      members,
+      users,
       groupName,
       groupAdmin,
       groupAdmin,
@@ -114,7 +143,7 @@ const createGroup = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-/////// getAllGroups
+/////// getAllGroups to the user
 const getAllGroups = async (req, res) => {
   try {
     const { id } = req.params;
@@ -132,10 +161,10 @@ const getAllGroups = async (req, res) => {
 };
 module.exports = {
   createChat,
-  gatAllChats,
   getChatTwoUser,
   chatDeleted,
   createGroup,
   getAllGroups,
   getChat,
+  chatsForUserLogedIn,
 };

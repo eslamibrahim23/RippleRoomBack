@@ -39,43 +39,39 @@ console.log(process.env.URL_DATABASE);
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  /// hena chat l any user
   socket.on("chatMessage", async (data) => {
     try {
       // Save the message to the database
       const newMessage = new Messages({
         chatId: data.chatId,
         sender: data.sender,
-        receiver: data.receiver,
         content: data.content,
       });
       await newMessage.save();
 
-      //hena messages between el atneeen any 2 users
-      io.to(data.sender).emit("chatMessage", newMessage);
-      io.to(data.receiver).emit("chatMessage", newMessage);
+      // Emit the message to all connected clients in the same chat room
+      io.to(data.chatId).emit("chatMessage", newMessage);
 
       console.log("Message saved and broadcasted:", newMessage);
     } catch (error) {
-      console.error("Error saving chat message:", error);
-      // Handle error if necessary
+      console.error("Error saving or broadcasting chat message:", error);
     }
   });
 
-  //hena ay chat hy creat
   socket.on("startChat", async (data) => {
     try {
       // Save the chat to the database
       const newChat = new Chats({
-        sender: data.sender,
-        receiver: data.receiver,
+        users: data.users,
       });
       await newChat.save();
 
-      console.log("Chat saved:", newChat);
+      // Join the chat room so that clients in the same chat can communicate
+      socket.join(newChat._id);
+
+      console.log("Chat saved and user joined the chat room:", newChat);
     } catch (error) {
-      console.error("Error saving chat:", error);
-      // Handle error if necessary
+      console.error("Error saving or joining chat:", error);
     }
   });
 
@@ -83,6 +79,7 @@ io.on("connection", (socket) => {
     console.log("User disconnected");
   });
 });
+
 console.log("hrloo");
 connect(
   "mongodb://test:test@ac-ut3jk2b-shard-00-00.qntodh6.mongodb.net:27017,ac-ut3jk2b-shard-00-01.qntodh6.mongodb.net:27017,ac-ut3jk2b-shard-00-02.qntodh6.mongodb.net:27017/RIPPLEROOM?replicaSet=atlas-qpj10i-shard-0&ssl=true&authSource=admin"
