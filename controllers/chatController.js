@@ -21,7 +21,7 @@ const getChat = async (req, res, next) => {
     });
 
     const savedChat = await newChat.save();
-
+      
     const getChat = await Chats.findById(savedChat._id).populate(
       "users",
       "-Password"

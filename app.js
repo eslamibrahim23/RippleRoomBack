@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
       // Join the chat room so that clients in the same chat can communicate
       socket.join(newChat._id);
 
-      console.log("Chat saved and user joined the chat room:", newChat);
+      console.log("Chat saved and user joined the  ripple room:", newChat);
     } catch (error) {
       console.error("Error saving or joining chat:", error);
     }

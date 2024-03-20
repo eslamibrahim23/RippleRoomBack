@@ -37,6 +37,7 @@ const createMessage = async (req, res) => {
 /////hene get message by chatId/    hena hnget all messages in one chat
 const getMessagesChat = async (req, res) => {
   try {
+    console.log("jhsd");
     const { id } = req.params;
     const chatId = id;
     const messages = await Messages.find({ chatId })
@@ -50,6 +51,7 @@ const getMessagesChat = async (req, res) => {
       })
       .sort({ createdAt: 1 })
       .select("content createdAt sender");
+
     res.status(200).json(messages);
   } catch (error) {
     res.status(500).json({ error: error.message });

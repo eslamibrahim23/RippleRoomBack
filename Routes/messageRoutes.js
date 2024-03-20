@@ -10,7 +10,7 @@ const {
 
 router.post("/createMessage/:id", createMessage);
 router.delete("/deleteMessage/:id", deltedMessage);
-router.get("/messagesChatId/:id", getMessagesChat);
+router.get("/messagesChatId/:id", getMessagesChat);   ///get messages 
 router.patch("/updateMessage/:id", messageUpdate);
 
 module.exports = router;
