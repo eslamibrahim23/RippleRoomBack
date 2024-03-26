@@ -13,10 +13,10 @@ const { Messages } = require("./models/messageSchema");
 const path = require("path");
 const app = express();
 const server = http.createServer(app, { log: false, origins: "*:*" });
-const io = socketIo(server);
+const io = socketIo(server, { cors: { origin: "*" } });
 app.use(express.json());
 // app.use(cors());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173/" }));
 app.use("/", authRoute);
 
 //// image

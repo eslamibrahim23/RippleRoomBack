@@ -168,7 +168,6 @@ const chatsForUserLogedIn = async (req, res) => {
   }
 };
 
-
 //hena b2q delete chat group or chat
 const chatDeleted = async (req, res) => {
   try {
