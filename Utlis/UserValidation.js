@@ -40,15 +40,15 @@ const loginschema = Joi.object({
   updatedAt: Joi.date(),
 });
 const updatedUserschema = Joi.object({
-  userName: Joi.string().min(3),
-  Bio: Joi.string(),
+  userName: Joi.string().min(3).required,
+  Bio: Joi.string().allow(``),
   Phone: Joi.number(),
-  Image: Joi.string(),
-  Address: Joi.string(),
+  Image: Joi.string().allow(""),
+  Address: Joi?.string(),
   Email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net"] },
-  }),
+  }).required,
   Password: JoiPassword.string()
     .min(8)
     .minOfLowercase(1)
