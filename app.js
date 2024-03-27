@@ -82,23 +82,21 @@ console.log(process.env.URL_DATABASE);
 // });
 const onlineUsers = {};
 
-// Socket.IO logic
+// Assuming this code is in your server-side Socket.IO handler
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log("Client connected:", socket.id);
 
-  // Handle chat message event
-  socket.on("chatMessage", async (data) => {
-    // Emit the message to all connected clients in the same chat room
-    io.to(data.chatId).emit("chatMessage", data);
-
-    console.log("Message saved and broadcasted:", data);
+  socket.on("chatMessage", (message) => {
+    console.log("Received message from client:", message);
+    // Broadcast the message to all connected clients
+    io.emit("chatMessage", message);
   });
 
-  // Handle disconnect event
   socket.on("disconnect", () => {
-    console.log(`User disconnected`);
+    console.log("Client disconnected:", socket.id);
   });
 });
+
 console.log("hrloo");
 connect(
   "mongodb://test:test@ac-ut3jk2b-shard-00-00.qntodh6.mongodb.net:27017,ac-ut3jk2b-shard-00-01.qntodh6.mongodb.net:27017,ac-ut3jk2b-shard-00-02.qntodh6.mongodb.net:27017/RIPPLEROOM?replicaSet=atlas-qpj10i-shard-0&ssl=true&authSource=admin"
