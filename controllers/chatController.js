@@ -112,32 +112,80 @@ const getChatTwoUser = async (req, res) => {
 //     res.status(500).json({ error: error.message });
 //   }
 // };
+// const chatsForUserLogedIn = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+
+//     // Apply pagination: Limit the number of chats returned per page
+//     const PAGE_SIZE = 10; // Adjust the page size as needed
+//     const page = req.query.page ? parseInt(req.query.page) : 1;
+//     const skip = (page - 1) * PAGE_SIZE;
+
+//     // Modify the query to use efficient indexing and limit the data returned
+//     const chats = await Chats.find({ users: userId })
+//       .populate("users", "userName Image")
+//       .skip(skip)
+//       .limit(PAGE_SIZE);
+
+//     console.log("Fetched chats:", chats);
+
+//     const processedChats = chats.map(async (chat) => {
+//       // Find receiver and last message for each chat
+//       const receiver = chat.users.find(
+//         (user) => user._id.toString() !== userId
+//       );
+
+//       if (!receiver) {
+//         console.log("Receiver not found for chat:", chat);
+//         return null; // Skip processing if receiver is not found
+//       }
+
+//       const lastMessage = await Messages.findOne({ chatId: chat._id })
+//         .sort({ createdAt: -1 })
+//         .select("content");
+
+//       return {
+//         _id: chat._id,
+//         receiver: {
+//           _id: receiver._id,
+//           userName: receiver.userName,
+//           Image: receiver.Image,
+//         },
+//         lastMessage: lastMessage ? lastMessage.content : null,
+//       };
+//     });
+
+//     // Wait for all processed chats to resolve
+//     const result = await Promise.all(processedChats);
+
+//     // Filter out null values (chats with no receiver)
+//     const filteredChats = result.filter((chat) => chat !== null);
+
+//     res.status(200).json(filteredChats);
+//   } catch (error) {
+//     console.log("Error occurred while fetching chats:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 const chatsForUserLogedIn = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Apply pagination: Limit the number of chats returned per page
-    const PAGE_SIZE = 10; // Adjust the page size as needed
-    const page = req.query.page ? parseInt(req.query.page) : 1;
-    const skip = (page - 1) * PAGE_SIZE;
-
-    // Modify the query to use efficient indexing and limit the data returned
-    const chats = await Chats.find({ users: userId })
-      .populate("users", "userName Image")
-      .skip(skip)
-      .limit(PAGE_SIZE);
+    const chats = await Chats.find({ users: userId }).populate(
+      "users",
+      "userName Image"
+    );
 
     console.log("Fetched chats:", chats);
 
     const processedChats = chats.map(async (chat) => {
-      // Find receiver and last message for each chat
       const receiver = chat.users.find(
         (user) => user._id.toString() !== userId
       );
 
       if (!receiver) {
         console.log("Receiver not found for chat:", chat);
-        return null; // Skip processing if receiver is not found
+        return null;
       }
 
       const lastMessage = await Messages.findOne({ chatId: chat._id })
@@ -155,10 +203,8 @@ const chatsForUserLogedIn = async (req, res) => {
       };
     });
 
-    // Wait for all processed chats to resolve
     const result = await Promise.all(processedChats);
 
-    // Filter out null values (chats with no receiver)
     const filteredChats = result.filter((chat) => chat !== null);
 
     res.status(200).json(filteredChats);
