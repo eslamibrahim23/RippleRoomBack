@@ -5,9 +5,7 @@ const JoiPassword = Joi.extend(joiPasswordExtendCore);
 const Userschema = Joi.object({
   userName: Joi.string().min(3).required(),
   Bio: Joi.string(),
-  Phone: Joi.string(),
   Image: Joi.string(),
-  Address: Joi.string(),
   Email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net"] },
@@ -23,6 +21,8 @@ const Userschema = Joi.object({
     .messages({ "any.only": "Confirm password must match password" }),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
+  Phone: Joi.string(),
+  Address: Joi.string(),
 });
 
 const loginschema = Joi.object({
@@ -42,13 +42,13 @@ const loginschema = Joi.object({
 const updatedUserschema = Joi.object({
   userName: Joi.string().min(3),
   Bio: Joi.string().allow(``),
-  Phone: Joi.number(),
   Image: Joi.string().allow(""),
   Address: Joi?.string(),
   Email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net"] },
   }),
+  Phone: Joi.number(),
   Password: JoiPassword.string()
     .min(8)
     .minOfLowercase(1)

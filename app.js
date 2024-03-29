@@ -36,60 +36,39 @@ app.use("/message", messageRoutes);
 const PORT = process.env.PORT || 3000;
 const URL = process.env.URL_DATABASE;
 console.log(process.env.URL_DATABASE);
-///hena connection with server
-// io.on("connection", (socket) => {
-//   console.log("A user connected");
 
-//   socket.on("chatMessage", async (data) => {
-//     try {
-//       // Save the message to the database
-//       const newMessage = new Messages({
-//         chatId: data.chatId,
-//         sender: data.sender,
-//         content: data.content,
-//       });
-//       await newMessage.save();
-
-//       // Emit the message to all connected clients in the same chat room
-//       io.to(data.chatId).emit("chatMessage", newMessage);
-
-//       console.log("Message saved and broadcasted:", newMessage);
-//     } catch (error) {
-//       console.error("Error saving or broadcasting chat message:", error);
-//     }
-//   });
-
-//   socket.on("startChat", async (data) => {
-//     try {
-//       // Save the chat to the database
-//       const newChat = new Chats({
-//         users: data.users,
-//       });
-//       await newChat.save();
-
-//       // Join the chat room so that clients in the same chat can communicate
-//       socket.join(newChat._id);
-
-//       console.log("Chat saved and user joined the  ripple room:", newChat);
-//     } catch (error) {
-//       console.error("Error saving or joining chat:", error);
-//     }
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("User disconnected");
-//   });
-// });
 const onlineUsers = {};
 
 // Assuming this code is in your server-side Socket.IO handler
+// io.on("connection", (socket) => {
+//   console.log("Client connected:", socket.id);
+
+//   socket.on("chatMessage", (message) => {
+//     console.log("Received message from client:", message);
+//     // Broadcast the message to all connected clients
+//     io.emit("chatMessage", message);
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("Client disconnected:", socket.id);
+//   });
+// });
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
-  socket.on("chatMessage", (message) => {
-    console.log("Received message from client:", message);
-    // Broadcast the message to all connected clients
-    io.emit("chatMessage", message);
+  //my last result as old vers
+  // socket.on("send_message", (message) => {
+  //   console.log("Received message from client:", message);
+  //   // Broadcast the message to all connected clients
+  //   io.emit("receive_message", message);
+
+  //new test to join room
+  socket.on("join_room", (data) => {
+    socket.join(data);
+  });
+  socket.on("send_message", (message) => {
+    // Broadcast the message to chatId
+    socket.to(message.chatId).emit("receive_message", message);
   });
 
   socket.on("disconnect", () => {

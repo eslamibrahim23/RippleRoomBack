@@ -14,21 +14,25 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    Phone: {
-      type: Number,
-    },
-    Bio: {
-      type: String,
-    },
-    Address: {
+    Password: {
       type: String,
     },
     Image: {
       type: String,
     },
-    Password: {
+    Bio: {
+      type: String,
+      default: "Hi there !",
+    },
+
+    Phone: {
+      type: Number,
+    },
+
+    Address: {
       type: String,
     },
+
     cPassword: {
       type: String,
     },
