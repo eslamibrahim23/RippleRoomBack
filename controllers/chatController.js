@@ -157,12 +157,12 @@ const getAllGroups = async (req, res) => {
   try {
     const { id } = req.params;
     const myGroups = await Chats.find({
-      $or: [{ members: { $in: [id] } }, { groupAdmin: id }],
+      $or: [{ users: { $in: [id] } }, { groupAdmin: id }],
       groupChat: true,
     })
       .populate("groupAdmin", "userName Image Bio Email")
-      .populate("members", "userName Bio Image Email");
-
+      .populate("users", "userName Bio Image Email");
+    console.log("getAllUsers");
     res.status(200).json(myGroups);
   } catch (error) {
     res.status(500).json({ error: error.message });
